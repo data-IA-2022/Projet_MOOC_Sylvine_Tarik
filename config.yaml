@@ -1,0 +1,29 @@
+mysql_azure_mooc:
+    user:       root
+    password:   greta-g5@2023
+    host:       172.17.0.4
+    port:       3306
+    type:       mysql
+    db_name:    MOOC
+
+pgsql_azure_mooc:
+    user:       postgres
+    password:   greta-g5@2023
+    host:       172.17.0.3
+    port:       5432
+    type:       postgresql
+    db_name:    MOOC
+
+mongo_azure_mooc:
+    user:       ""
+    password:   ""
+    host:       172.17.0.2
+    port:       27017
+    type:       mongodb
+    db_name:    MOOC
+
+ssh_tunnel:
+    user:       groupe5
+    password:   greta-g5@2023
+    host:       vm-azure-g5.uksouth.cloudapp.azure.com
+    port:       22
