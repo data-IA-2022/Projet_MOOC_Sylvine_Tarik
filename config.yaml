@@ -17,7 +17,7 @@ pgsql_azure_mooc:
 mongo_azure_mooc:
     user:       ""
     password:   ""
-    host:       172.17.0.2
+    host:       127.0.0.1
     port:       27017
     type:       mongodb
     db_name:    MOOC
@@ -27,3 +27,9 @@ ssh_tunnel:
     password:   greta-g5@2023
     host:       vm-azure-g5.uksouth.cloudapp.azure.com
     port:       22
+    ssh_command:    ssh
+    ssh_parameters:
+    - "-L 27017:172.17.0.2:27017"
+    - "-L 3306:172.17.0.4:3306"
+    - "-L 5432:172.17.0.3:5432"
+    ssh_host:   groupe5@vm-azure-g5.uksouth.cloudapp.azure.com
