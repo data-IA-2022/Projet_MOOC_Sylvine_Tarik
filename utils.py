@@ -20,6 +20,5 @@ def nombre_messages(obj):
     if 'children' in obj:
         for msg in obj['children']:
             cumul += nombre_messages(msg)
-    if XXXXXXXXXXXXXXX
-    print(f"id: {obj['id']}  = {cumul} messages")
+        print(f"id: {obj['id']}  = {cumul} messages")
     return cumul
