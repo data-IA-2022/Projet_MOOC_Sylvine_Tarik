@@ -1,7 +1,7 @@
 mysql_azure_mooc:
     user:       root
     password:   greta-g5@2023
-    host:       172.17.0.4
+    host:       172.17.0.3
     port:       3306
     type:       mysql
     db_name:    MOOC
@@ -9,7 +9,7 @@ mysql_azure_mooc:
 pgsql_azure_mooc:
     user:       postgres
     password:   greta-g5@2023
-    host:       172.17.0.3
+    host:       172.17.0.4
     port:       5432
     type:       postgresql
     db_name:    MOOC
@@ -17,19 +17,73 @@ pgsql_azure_mooc:
 mongo_azure_mooc:
     user:       ""
     password:   ""
-    host:       127.0.0.1
+    host:       172.17.0.2
     port:       27017
     type:       mongodb
     db_name:    MOOC
 
-ssh_tunnel:
+mysql_oracle_mooc:
+    user:       root
+    password:   greta-g5@2023
+    host:       172.17.0.3
+    port:       3306
+    type:       mysql
+    db_name:    MOOC
+
+pgsql_oracle_mooc:
+    user:       postgres
+    password:   greta-g5@2023
+    host:       172.17.0.4
+    port:       5432
+    type:       postgresql
+    db_name:    MOOC
+
+mongo_oracle_mooc:
+    user:       ""
+    password:   ""
+    host:       172.17.0.2
+    port:       27017
+    type:       mongodb
+    db_name:    MOOC
+
+mysql_datalab:
+    user:       root
+    password:   greta2023
+    host:       localhost
+    port:       3306
+    type:       mysql
+    db_name:    g5
+
+pgsql_datalab:
+    user:       postgres
+    password:   greta2023
+    host:       localhost
+    port:       5432
+    type:       postgresql
+    db_name:    MOOC
+
+mongo_datalab:
+    user:       ""
+    password:   ""
+    host:       docker-mongo
+    port:       27017
+    type:       mongodb
+    db_name:    g5-MOOC
+
+ssh_tunnel-azure:
     user:       groupe5
     password:   greta-g5@2023
     host:       vm-azure-g5.uksouth.cloudapp.azure.com
     port:       22
-    ssh_command:    ssh
-    ssh_parameters:
-    - "-L 27017:172.17.0.2:27017"
-    - "-L 3306:172.17.0.4:3306"
-    - "-L 5432:172.17.0.3:5432"
-    ssh_host:   groupe5@vm-azure-g5.uksouth.cloudapp.azure.com
+
+ssh_tunnel_datalab:
+    user:       medjahed
+    password:   64234a746dd79d81ba42ceae31b88e6f681cae16dd17a1b9339671043e28ad76
+    host:       datalab.myconnectech.fr
+    port:       22
+
+ssh_tunnel_datalab_mame:
+    user:       medjahed
+    password:   64234a746dd79d81ba42ceae31b88e6f681cae16dd17a1b9339671043e28ad76
+    host:       datalab-mame.myconnectech.fr
+    port:       22
