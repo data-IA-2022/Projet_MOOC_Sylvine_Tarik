@@ -41,17 +41,17 @@ def traitement(msg, parent_id=None):
     if not msg['anonymous']:
         conn_mysql_datalab.execute("INSERT IGNORE INTO Users (username, user_id) VALUES (%s,%s) ;", [msg['username'], msg['user_id']])
     conn_mysql_datalab.execute("""INSERT INTO Messages 
-                        (id, type, created_at, username, depth, body, parent_id) 
-                        VALUES (%s,%s,%s,%s,%s,%s,%s)
+                        (id, type, created_at, username, depth,thread_id , body, parent_id) 
+                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
                         ON DUPLICATE KEY UPDATE parent_id=VALUES(parent_id), depth=VALUES(depth);""",
-                        [msg['id'], msg['type'], dt, username, msg['depth'] if 'depth' in msg else None, msg['body'], parent_id])
+                        [msg['id'], msg['type'], dt, username, msg['depth'] if 'depth' in msg else None, msg['children']['thread_id'], msg['body'], parent_id])
 
 
 for doc in cursor:
     #print(doc)
     print('-------------------------------------------------------------------------')
     #print(json.dumps(doc, indent=4))
-    print(doc['_id'], doc['content']['course_id'])
+    print(doc['_id'], doc['content']['course_id'], doc['content']['children'] ['thread_id'])
 
     conn_mysql_datalab.execute("INSERT IGNORE INTO Mooc (course_id) VALUES (%s) ;", [doc['content']['course_id']])
     conn_mysql_datalab.execute("INSERT IGNORE INTO Threads (_id,course_id) VALUES (%s,%s) ;", [doc['_id'], doc['content']['course_id']])
