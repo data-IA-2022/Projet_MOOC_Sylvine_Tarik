@@ -52,8 +52,11 @@ def traitement(msg, parent_id=None, thread_id=None):
     thread_id = msg['id']
     body_length = len(msg['body'])
     print("Recurse ", msg['id'], msg['depth'] if 'depth' in msg else '-', parent_id, dt, thread_id)
-
-    if not msg['anonymous']:
+    if len(msg['body'])>65000:
+        #print(msg['body'])
+        msg['body'] = msg['body'][:65000]
+    
+    if not msg['anonymous'] and 'username' in msg:
         conn_mysql_datalab.execute("INSERT IGNORE INTO Users (username, user_id) VALUES (%s,%s) ;", [msg['username'], msg['user_id']])
     conn_mysql_datalab.execute("""INSERT INTO Messages 
                         (id, type, created_at, username, depth, thread_id, body, parent_id, body_length) 
@@ -80,13 +83,13 @@ for doc in cursor:
         utils.recur_message(doc['content'], traitement,  doc['_id'])
     except ValueError:
         print(ValueError)
-        pass
+        quit()
  
 # conn_mysql_datalab.execute("SET FOREIGN_KEY_CHECKS=1;")   
 duree = time.time() - starting_time
 print(f"durée de chargement des tables Messages, Mooc, Threads, Users: {int(duree/3600)} H {int(duree%3600/60)} M {duree%3600%60}")
 
-# quit()
+# # quit()
 
 ########################################## Insertion de la table Results ############################
 # Execute the query
@@ -104,7 +107,7 @@ for document in cursor2:
     for course_id in keys:
         # print(course )
         sub_doc = document[course_id]
-        if sub_doc.get("grade") != None:
+        if sub_doc.get("grade") in sub_doc:
             grade = sub_doc.get("grade")
             certificate_eligible = sub_doc.get("Certificate Eligible")
             gender = sub_doc.get("gender") if 'gender' in sub_doc else ''
@@ -117,7 +120,9 @@ for document in cursor2:
                                 [username, country, gender, level_of_education])
             print("Update dans Users", username, country, gender, level_of_education)
             conn_mysql_datalab.execute("INSERT IGNORE INTO Results (course_id, username, grade, certificate_eligible) VALUES (%s,%s,%s,%s) ;", [course_id, username, grade, certificate_eligible])
-            
+            conn_mysql_datalab.execute("""INSERT INTO Mooc (course_id) 
+                                VALUES (%s)
+                                ON DUPLICATE KEY UPDATE course_id=VALUES(course_id);""", [course_id])
             print("Insertion dans Results",course_id, username, grade, certificate_eligible)
 
 duree = time.time() - starting_time
