@@ -1,3 +1,7 @@
-venv_mooc
-config.yaml
+# Environments
+venv_mooc/
 .venv
+
+# config file
+config.yaml
+
