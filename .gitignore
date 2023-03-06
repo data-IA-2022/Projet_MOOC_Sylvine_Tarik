@@ -5,3 +5,5 @@ venv_mooc/
 # config file
 config.yaml
 
+# fichiers perso
+db_load_sylvine.py

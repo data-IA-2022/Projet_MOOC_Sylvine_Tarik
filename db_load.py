@@ -2,15 +2,21 @@ import yaml, utils
 import db_connection as db_con
 import json
 import pandas as pd
-from sqlalchemy import text
+from sqlalchemy import text, create_engine
 from pymongo import MongoClient
 import time
 
 # Connexion à mongodb
 conn = db_con.connect_to_db(config_file='config.yaml', section='mongo_datalab', ssh=False, local_port=None, ssh_section= 'ssh_tunnel_datalab')
 # Connexion à mysql
-conn_mysql_datalab = db_con.connect_to_db(config_file='config.yaml', section='mysql_datalab', ssh=False, local_port=None, ssh_section= 'ssh_tunnel_datalab')
+# conn_mysql_datalab = db_con.connect_to_db(config_file='config.yaml', section='mysql_datalab', ssh=False, local_port=None, ssh_section= 'ssh_tunnel_datalab')
 
+# Version Sylvine:
+# mysql = "mysql://root:greta2023@127.0.0.1/g5"
+mysql = "mysql://root:greta2023@127.0.0.1/g5_sylvine"
+conn_mysql_datalab = create_engine(mysql)
+
+print(conn_mysql_datalab)
 
 
 # Get a reference to the collection you want to read
@@ -24,7 +30,7 @@ cursor = forum_collection.find(filter=None, projection={'annotated_content_info'
 nbre_docs = cursor.count()
 print('nbre de doc: ', nbre_docs)
 
-
+quit()
 
 # # Création de la database en sql avec sqlalchemy
 
