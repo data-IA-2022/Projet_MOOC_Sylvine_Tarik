@@ -1,3 +1,4 @@
+from colorama import Fore, Back, Style
 def recur_message(msg, f, parent_id=None, thread_id=None):
     '''
     Cette fonction fait un traitement messages de l'objet JSON passé
