@@ -1,4 +1,4 @@
-def recur_message(msg, f, parent_id=None):
+def recur_message(msg, f, parent_id=None, thread_id=None):
     '''
     Cette fonction fait un traitement messages de l'objet JSON passé
     :param obj: objet JSON contiens un MESSAGE
@@ -6,16 +6,20 @@ def recur_message(msg, f, parent_id=None):
     :return:
     '''
     #print("Recurse ", obj['id'], obj['depth'] if 'depth' in obj else '-')
-    f(msg, parent_id)
+    f(msg, parent_id, thread_id)
+    if not msg:
+        pass
+    if not msg['id']:
+        pass
     if 'children' in msg:
         for child in msg['children']:
-            recur_message(child, f, parent_id=msg['id'])
+            recur_message(child, f, parent_id=msg['id'], thread_id= child['thread_id'])
     if 'non_endorsed_responses' in msg:
         for child in msg['non_endorsed_responses']:
-            recur_message(child, f, parent_id=msg['id'])
+            recur_message(child, f, parent_id=msg['id'], thread_id= child['thread_id'])
     if 'endorsed_responses' in msg:
         for child in msg['endorsed_responses']:
-            recur_message(child, f, parent_id=msg['id'])
+            recur_message(child, f, parent_id=msg['id'], thread_id= child['thread_id'])
 
 def nombre_messages(obj):
     '''

@@ -54,6 +54,7 @@ mysql_datalab:
     type:       mysql
     db_name:    g5
     docker_host:    docker-mysql
+    docker_port:       3306
 
 pgsql_datalab:
     user:       postgres
@@ -63,6 +64,7 @@ pgsql_datalab:
     type:       postgresql
     db_name:    MOOC
     docker_host:    docker-postgres
+    docker_port:       5432
 
 mongo_datalab:
     user:       ""
