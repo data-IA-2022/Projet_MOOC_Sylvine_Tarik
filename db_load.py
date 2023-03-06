@@ -2,11 +2,11 @@ import yaml
 import db_connection as db_con
 import json
 import pandas as pd
-from sqlalchemy import text
+from sqlalchemy import create_engine
 
 
 
-conn = db_con.connect_to_db(config_file='config.yaml', section='mongo_datalab', ssh=True, local_port=None, ssh_section= 'ssh_tunnel_datalab')
+conn = db_con.connect_to_db(config_file='config.yaml', section='mongo_datalab', ssh=False, local_port=None, ssh_section= 'ssh_tunnel_datalab')
 
 # Get a reference to the collection you want to read
 forum_collection = conn["forum"]
@@ -34,7 +34,7 @@ documents = forum_collection.find().limit(1)
 # Iterate over the documents and print their contents
 for doc in documents:
     json_formatted_str = json.dumps(doc, indent=2)
-    print(json_formatted_str)
+    print(json_formatted_str[:200])
 
 
 
@@ -66,13 +66,38 @@ for doc in documents:
 
 # # Connection à la db
 
-conn_mysql_datalab = db_con.connect_to_db(config_file='config.yaml', section='mysql_datalab', ssh=False, local_port=None, ssh_section= 'ssh_tunnel_datalab')
+# conn_mysql_datalab = db_con.connect_to_db(config_file='config.yaml', section='mysql_datalab', ssh=False, local_port=None, ssh_section= 'ssh_tunnel_datalab')
 
 
 # # Création de la database en sql avec sqlalchemy
 
+# from sqlalchemy import text
+
+# result = conn_mysql_datalab.execute(text('SHOW TABLES;'))
+# tables = result.fetchall()
+# print(tables)
+
+
+mysql = "mysql://root:greta2023@127.0.0.1/g5"
+# mySQLengine = create_engine(mysql)
+mySQLengine = create_engine(mysql, echo=True)
+
+
+print ("---------------------------------------")
+print(mySQLengine)
+
 from sqlalchemy import text
 
-result = conn_mysql_datalab.execute(text('SHOW TABLES;'))
-tables = result.fetchall()
-print(tables)
+# result = mySQLengine.execute(text('SHOW TABLES;'))
+# tables = result.fetchall()
+# print(tables)
+
+# result = mySQLengine.execute('SHOW TABLES;')
+# tables = result.fetchall()
+# print(tables)
+
+with mySQLengine.connect() as conn:
+    result = conn.execute(text('SHOW TABLES;'))
+    tables = result.fetchall()
+    print(tables)
+

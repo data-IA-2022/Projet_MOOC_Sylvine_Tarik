@@ -43,6 +43,7 @@ def connect_to_db(config_file, section, ssh=False, local_port=None, ssh_section=
             return client[config[section]['db_name']]
 
         url = '{type}://{user}:{password}@{host}:{port}/{db_name}'.format(**config[section])
+        print(url)
 
         engine = create_engine(url)
 
