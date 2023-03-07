@@ -6,6 +6,7 @@ from sqlalchemy import text, create_engine
 from pymongo import MongoClient
 import time
 
+## I. Connexion aux BDD 
 # Connexion à mongodb
 conn = db_con.connect_to_db(config_file='config.yaml', section='mongo_datalab', ssh=False, local_port=None, ssh_section= 'ssh_tunnel_datalab')
 # Connexion à mysql
@@ -16,7 +17,11 @@ conn = db_con.connect_to_db(config_file='config.yaml', section='mongo_datalab', 
 mysql = "mysql://root:greta2023@127.0.0.1/g5_sylvine"
 conn_mysql_datalab = create_engine(mysql)
 
-print(conn_mysql_datalab)
+print('---------------------------')
+print(f"connexion Mongo : {conn}")
+print(f"connexion SQL : {conn_mysql_datalab}")
+print('---------------------------')
+
 
 
 # Get a reference to the collection you want to read
@@ -25,7 +30,14 @@ user_collection = conn["user"]
 
 # doc = forum_collection.find_one({"_id": "52ef50b5cfc81d7e4100090e"})
 # print(doc)
+# print(type(doc))
 # quit()
+
+doc = user_collection.find_one({"username": "Ego41"})
+print(doc)
+print(type(doc))
+quit()
+
 cursor = forum_collection.find(filter=None, projection={'annotated_content_info': 0, '_id': 1})#.limit(5000)
 nbre_docs = cursor.count()
 print('nbre de doc: ', nbre_docs)
