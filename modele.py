@@ -20,7 +20,7 @@ from sklearn.metrics import r2_score
 from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-
+import pickle
 
 
 # import du dataset
@@ -29,7 +29,7 @@ from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 
 #dummy dataset pour entrainement
 data = pd.read_csv("../../dummy_dataset.csv", sep = ",")
-data["concat_bodys"] = data["concat_bodys"].fillna("") # remplacer les NA par des "" pour le concat body
+data["corpus"] = data["corpus"].fillna("") # remplacer les NA par des "" pour le concat body
 
 
 # II. Prétraitement des données
@@ -41,7 +41,7 @@ subjectivity = []
 
 for (i, row) in data.iterrows():
     # if i>10: quit()
-    blob = tb(row['concat_bodys'])
+    blob = tb(row['corpus'])
     # print(f"user: {row['user']} course :{row['course_id']} sentiment:{blob.sentiment}")
     polarity.append(blob.sentiment[0])
     subjectivity.append(blob.sentiment[1])
@@ -88,15 +88,15 @@ def create_pipe(model):
     pipe = Pipeline(steps=[('preparation', preparation),
                             ('model',model)])
 
-
     return pipe
 
+
 '''
-ICI JE CHERCHE JUSTE A APPLIQUER LA PIPELINE SUR LE DATASET SANS FAIRE DE GRIDSEARCH, ON GARDERA PAS FORCEMENT
+#ICI JE CHERCHE JUSTE A APPLIQUER LA PIPELINE SUR LE DATASET SANS FAIRE DE GRIDSEARCH, ON GARDERA PAS FORCEMENT
 
 # appliquer la pipeline sur le bon dataset
 def pipe_res(target, model):
-    X = data.drop(['user', 'course_id', 'concat_bodys','grade','certificate_eligible'], axis=1)
+    X = data.drop(['user', 'course_id', 'corpus','grade','certificate_eligible'], axis=1)
     y = data[target]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
@@ -108,7 +108,6 @@ def pipe_res(target, model):
 
 
 print("-------------CLASSIFICATION : target = certificate_eligible-------------")
-## logistic regression 
 pipe_res("certificate_eligible", LogisticRegression())
 pipe_res("certificate_eligible", SVC())
 pipe_res("certificate_eligible", RandomForestClassifier())
@@ -117,13 +116,14 @@ pipe_res("certificate_eligible", RandomForestClassifier())
 print("-------------REGRESSION : target = grade-------------")
 pipe_res("grade", LinearRegression())
 pipe_res("grade", RandomForestRegressor())
-'''
 
+quit()
+'''
 
 
 # Déclaration du grid search 
 def grid_search_fun(target, model, parameters):
-    X = data.drop(['user', 'course_id', 'concat_bodys','grade','certificate_eligible'], axis=1)
+    X = data.drop(['user', 'course_id', 'corpus','grade','certificate_eligible'], axis=1)
     y = data[target]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
@@ -143,18 +143,80 @@ def grid_search_fun(target, model, parameters):
 
     # Evaluate model performance
     print("Test score - R2:", r2_score(y_test, y_pred))
+    return grid
 
 # test du gridsearch sur le svc
 params = {'model__kernel': ['linear', 'poly', 'rbf', 'sigmoid'] }  
-grid_search_fun("certificate_eligible", SVC(), params)
-quit()
+modele = grid_search_fun("certificate_eligible", SVC(), params)
 
 
+filename = 'finalized_model.sav'
+pickle.dump(modele.best_estimator_, open(filename, 'wb'))
+print("modele enregistré")
+
+# load the model from disk
+loaded_model = pickle.load(open(filename, 'rb'))
+print("modèle chargé")
+
+X = data.drop(['user', 'course_id', 'corpus','grade','certificate_eligible'], axis=1)
+y = data['certificate_eligible']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+result = loaded_model.score(X_test, y_test)
+print(result)
 
 
 '''anticipation sur la prédiction par la suite:
 on voudra entrer des données concernant l'utilisateur via un formulaire
 nb: certaines de ces données devront être process hors du pipeline, notamment pour l'analyse de sentiments 
-(car besoin de créer deux colonnes ). Il faudra penser à préprocess le concat_bodys (si null, ""; sinon faire le preproc) 
+(car besoin de créer deux colonnes ). Il faudra penser à préprocess le corpus (si null, ""; sinon faire le preproc) 
 et la target si on choisit la classif
 '''
+
+
+
+# soit cette liste l'ensemble des données entrées par l'utilisateur dans le formulaire
+gender = "m"
+country = "fr"
+level_of_education = "hs"
+nb_threads = 1
+nb_comments = 2
+# corpus = "c'est un roc, c'est un pic, c'est un cap, que dis-je c'est un cap, c'est une péninsule!"
+corpus = "c'est nul, je n'aime pas, je suis subjectif et négatif"
+delai_1er_post = 6
+
+x_pred = [gender, country, level_of_education, nb_threads, nb_comments, corpus, delai_1er_post]
+print(f"x pred avant = {x_pred}")
+# process les data d'entrée
+# traiter la façon dont on récupère les data vides: est-ce des Na? des ""? 
+# je laisse la suite qui ici ne fait rien mais à adapter en fonction du résutalt du formulaire
+
+# if corpus == "":
+#     corpus = ""
+
+tb = Blobber(pos_tagger=PatternTagger(), analyzer=PatternAnalyzer())
+blob = tb(corpus)
+
+polarity = (blob.sentiment[0])
+subjectivity = (blob.sentiment[1])
+
+x_pred.append(polarity)
+x_pred.append(subjectivity)
+print(f"x pred complet= {x_pred}")
+
+
+# pred model
+df_input = pd.DataFrame(np.array([x_pred]),
+                    columns=["gender", "country", "level_of_education", "nb_threads", "nb_comments", "corpus", "delai_1er_post", "polarity", "subjectivity"])
+
+y_pred = loaded_model.predict(df_input)
+
+print(f"y pred = {y_pred}")
+if y_pred == [1]:
+    print("Cet utilisateur devrait valider le diplome")
+else: 
+    print("Cet utilisateur ne devrait pas valider le diplome")
+
+
+
+

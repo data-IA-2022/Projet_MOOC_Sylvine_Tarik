@@ -43,7 +43,7 @@ CREATE TABLE `Threads` (
   CONSTRAINT `Threads_FK` FOREIGN KEY (`course_id`) REFERENCES `Mooc` (`course_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-
+/*
 -- g5.Messages definition
 CREATE TABLE `Messages` (
   `id` char(24) NOT NULL,
@@ -63,13 +63,15 @@ CREATE TABLE `Messages` (
   CONSTRAINT `Messages_FK_1` FOREIGN KEY (`thread_id`) REFERENCES `Threads` (`_id`),
   CONSTRAINT `Messages_FK_2` FOREIGN KEY (`parent_id`) REFERENCES `Messages` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+*/
 
--- NB: possible que la table message ne puisse pas etre crée d'un coup. il faut d'abord la créer vide avec ses colonnes, 
--- puis ajouter la clé primaure sur id, puis ajouter les clés étrangères. Je pense que tout du'n coup ne marche pas car tant que la ligne n'est pas finie, 
--- il considère qu'il n'y a pas encore de clé primaire sur id et donc il ne veut pas mettre une clé étrangère sur parent_id qui pointe vers id 
+-- NB: la table message ne peut pas etre crée d'un coup comme ci-dessus avec ses clés (car elle se référence elle-même). 
+-- il faut d'abord la créer vide avec ses colonnes, 
+-- puis ajouter la clé primaire sur id, 
+-- puis ajouter les clés étrangères. 
 -- (vu que clé primaire n'existe pas encore sur id)
 
-/*
+
 CREATE TABLE `Messages` (
   `id` char(24) NOT NULL,
   `type` varchar(100) DEFAULT NULL,
@@ -81,9 +83,10 @@ CREATE TABLE `Messages` (
   `parent_id` char(24) DEFAULT NULL,
   `body_length` int DEFAULT NULL);
   
- 
--- manque ligne pour créer primary key sur id
-
+  
+-- puis créer les clés une fois la table messages créée.
+/*
+-- attention il en manque
 ALTER TABLE g5_sylvine.Messages ADD CONSTRAINT Messages_FK FOREIGN KEY (username) REFERENCES g5_sylvine.Users(username);
 ALTER TABLE g5_sylvine.Messages ADD CONSTRAINT Messages_FK_1 FOREIGN KEY (thread_id) REFERENCES g5_sylvine.Threads(`_id`);
 ALTER TABLE g5_sylvine.Messages ADD CONSTRAINT Messages_FK_2 FOREIGN KEY (parent_id) REFERENCES g5_sylvine.Messages (id) 
