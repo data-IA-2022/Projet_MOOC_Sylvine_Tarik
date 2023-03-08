@@ -10,6 +10,9 @@ from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder, RobustScaler, LabelEncoder
 from sklearn.pipeline import Pipeline
 
+from unidecode import unidecode
+# import unidecode
+
 from textblob import TextBlob, Blobber
 from textblob_fr import PatternTagger, PatternAnalyzer
 
@@ -28,17 +31,54 @@ import pickle
 # attention il faudra trier les données et retirer les anonymes, les admins
 
 #dummy dataset pour entrainement
-data = pd.read_csv("../../dummy_dataset.csv", sep = ",")
-data["corpus"] = data["corpus"].fillna("") # remplacer les NA par des "" pour le concat body
+# data = pd.read_csv("../../dummy_dataset.csv", sep = ",")
+# data["corpus"] = data["corpus"].fillna("") # remplacer les NA par des "" pour le concat body
+
+# dataset de la BDD
+data = pd.read_csv("data/dataset.csv", sep = ",")
+data.dropna(subset=['certificate_eligible', 'grade'], inplace = True)
+
+
+
+# print(data.describe(include = object))
 
 
 # II. Prétraitement des données
-# ajout des colonnes pour textblob: calcul polarity et subjectivity
+
+# 1 . encoding de la target certificate_eligible (nécessaire si jamais logistic regression)
+data['certificate_eligible'] = LabelEncoder().fit_transform(data['certificate_eligible'])
+
+
+# 2. ajout des colonnes pour textblob: calcul polarity et subjectivity
+
+
+# prétraitement colonne corpus avant analyse de sentiments
+# passer en lowercase
+data["corpus"]= data["corpus"].str.lower()
+# envlever les accents
+unidec_corpus = []
+for (i, row) in data.iterrows():
+    truc = unidecode(row['corpus'])
+    # print(f"user: {row['user']} course :{row['course_id']} new_corp:{truc[:25]}")
+    unidec_corpus.append(truc)
+
+data["corpus"] = unidec_corpus
+# print(data.head)
+
+
+# print("-----------------------------------")
+# print(data.describe(include = object))
+# print(data.corpus.head())
+
+
+
+# application del'analyse de sentiments
 tb = Blobber(pos_tagger=PatternTagger(), analyzer=PatternAnalyzer())
 
 polarity = []
 subjectivity = []
 
+# avec version Emmanuel
 for (i, row) in data.iterrows():
     # if i>10: quit()
     blob = tb(row['corpus'])
@@ -54,12 +94,26 @@ data['subjectivity']=subjectivity
 # détecter la langue, "lisser" les phrases = enlever la ponctuation, corriger les fautes, enlever les stop words...
 
 
-# encoding de la target certificate_eligible (nécessaire si jamais logistic regression)
-data['certificate_eligible'] = LabelEncoder().fit_transform(data['certificate_eligible'])
-# à exporter en sérialisé pour récup les data
 
 
 # III. Modele 
+
+# tentative d'utiliser pycaret
+
+from pycaret.classification import *
+data_class = data.drop(['user', 'course_id', 'corpus','grade'], axis=1)
+s = setup(data_class, target = 'certificate_eligible')
+
+
+best = compare_models()
+evaluate_model(best)
+
+print(best)
+
+quit()
+
+
+
 
 # fonction pour créer la pipeline
 def create_pipe(model):
@@ -91,7 +145,7 @@ def create_pipe(model):
     return pipe
 
 
-'''
+
 #ICI JE CHERCHE JUSTE A APPLIQUER LA PIPELINE SUR LE DATASET SANS FAIRE DE GRIDSEARCH, ON GARDERA PAS FORCEMENT
 
 # appliquer la pipeline sur le bon dataset
@@ -118,7 +172,7 @@ pipe_res("grade", LinearRegression())
 pipe_res("grade", RandomForestRegressor())
 
 quit()
-'''
+
 
 
 # Déclaration du grid search 
