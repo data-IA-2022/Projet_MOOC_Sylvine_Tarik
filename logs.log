@@ -10968,3 +10968,99 @@ ValueError: Supported target types are: ('binary', 'multiclass'). Got 'continuou
 2023-03-08 23:41:06,659:INFO:save_model() successfully completed......................................
 2023-03-08 23:41:15,884:INFO:Initializing load_model()
 2023-03-08 23:41:15,884:INFO:load_model(model_name=my_best_pipeline, platform=None, authentication=None, verbose=True)
+2023-03-08 23:54:37,055:INFO:Initializing evaluate_model()
+2023-03-08 23:54:37,056:INFO:evaluate_model(estimator=GradientBoostingClassifier(ccp_alpha=0.0, criterion='friedman_mse', init=None,
+                           learning_rate=0.1, loss='deviance', max_depth=3,
+                           max_features=None, max_leaf_nodes=None,
+                           min_impurity_decrease=0.0, min_impurity_split=None,
+                           min_samples_leaf=1, min_samples_split=2,
+                           min_weight_fraction_leaf=0.0, n_estimators=100,
+                           n_iter_no_change=None, presort='deprecated',
+                           random_state=5946, subsample=1.0, tol=0.0001,
+                           validation_fraction=0.1, verbose=0,
+                           warm_start=False), fold=None, fit_kwargs=None, plot_kwargs=None, feature_name=None, groups=None, use_train_data=False)
+2023-03-08 23:54:37,072:INFO:Initializing plot_model()
+2023-03-08 23:54:37,072:INFO:plot_model(fold=StratifiedKFold(n_splits=10, random_state=None, shuffle=False), use_train_data=False, verbose=True, is_in_evaluate=True, display=None, display_format=None, estimator=GradientBoostingClassifier(ccp_alpha=0.0, criterion='friedman_mse', init=None,
+                           learning_rate=0.1, loss='deviance', max_depth=3,
+                           max_features=None, max_leaf_nodes=None,
+                           min_impurity_decrease=0.0, min_impurity_split=None,
+                           min_samples_leaf=1, min_samples_split=2,
+                           min_weight_fraction_leaf=0.0, n_estimators=100,
+                           n_iter_no_change=None, presort='deprecated',
+                           random_state=5946, subsample=1.0, tol=0.0001,
+                           validation_fraction=0.1, verbose=0,
+                           warm_start=False), feature_name=None, fit_kwargs={}, groups=None, label=False, plot=parameter, plot_kwargs={}, save=False, scale=1, system=True)
+2023-03-08 23:54:37,072:INFO:Checking exceptions
+2023-03-08 23:54:37,074:INFO:Preparing display monitor
+2023-03-08 23:54:37,080:INFO:Preloading libraries
+2023-03-08 23:54:37,093:INFO:Copying training dataset
+2023-03-08 23:54:37,094:INFO:Copying test dataset
+2023-03-08 23:54:37,095:INFO:Plot type: parameter
+2023-03-08 23:54:37,109:INFO:Visual Rendered Successfully
+2023-03-08 23:54:37,252:INFO:plot_model() succesfully completed......................................
+2023-03-08 23:54:42,018:INFO:Initializing plot_model()
+2023-03-08 23:54:42,019:INFO:plot_model(fold=StratifiedKFold(n_splits=10, random_state=None, shuffle=False), use_train_data=False, verbose=True, is_in_evaluate=True, display=None, display_format=None, estimator=GradientBoostingClassifier(ccp_alpha=0.0, criterion='friedman_mse', init=None,
+                           learning_rate=0.1, loss='deviance', max_depth=3,
+                           max_features=None, max_leaf_nodes=None,
+                           min_impurity_decrease=0.0, min_impurity_split=None,
+                           min_samples_leaf=1, min_samples_split=2,
+                           min_weight_fraction_leaf=0.0, n_estimators=100,
+                           n_iter_no_change=None, presort='deprecated',
+                           random_state=5946, subsample=1.0, tol=0.0001,
+                           validation_fraction=0.1, verbose=0,
+                           warm_start=False), feature_name=None, fit_kwargs={}, groups=None, label=False, plot=confusion_matrix, plot_kwargs={}, save=False, scale=1, system=True)
+2023-03-08 23:54:42,020:INFO:Checking exceptions
+2023-03-08 23:54:42,022:INFO:Preparing display monitor
+2023-03-08 23:54:42,027:INFO:Preloading libraries
+2023-03-08 23:54:42,043:INFO:Copying training dataset
+2023-03-08 23:54:42,044:INFO:Copying test dataset
+2023-03-08 23:54:42,045:INFO:Plot type: confusion_matrix
+2023-03-08 23:54:42,050:INFO:Initializing get_config()
+2023-03-08 23:54:42,050:INFO:get_config(variable=prep_pipe)
+2023-03-08 23:54:42,057:INFO:Global variable: prep_pipe returned as Pipeline(memory=None,
+         steps=[('dtypes',
+                 DataTypes_Auto_infer(categorical_features=[],
+                                      display_types=True, features_todrop=[],
+                                      id_columns=[],
+                                      ml_usecase='classification',
+                                      numerical_features=[],
+                                      target='certificate_eligible',
+                                      time_features=[])),
+                ('imputer',
+                 Simple_Imputer(categorical_strategy='not_available',
+                                fill_value_categorical=None,
+                                fill_value_numerical=None...
+                ('scaling', 'passthrough'), ('P_transform', 'passthrough'),
+                ('binn', 'passthrough'), ('rem_outliers', 'passthrough'),
+                ('cluster_all', 'passthrough'),
+                ('dummy', Dummify(target='certificate_eligible')),
+                ('fix_perfect', Remove_100(target='certificate_eligible')),
+                ('clean_names', Clean_Colum_Names()),
+                ('feature_select', 'passthrough'), ('fix_multi', 'passthrough'),
+                ('dfs', 'passthrough'), ('pca', 'passthrough')],
+         verbose=False)
+2023-03-08 23:54:42,057:INFO:get_config() succesfully completed......................................
+2023-03-08 23:54:42,079:INFO:Fitting Model
+2023-03-08 23:54:42,081:INFO:Scoring test/hold-out set
+2023-03-08 23:54:42,349:INFO:Visual Rendered Successfully
+2023-03-08 23:54:42,483:INFO:plot_model() succesfully completed......................................
+2023-03-08 23:55:04,414:INFO:Initializing plot_model()
+2023-03-08 23:55:04,415:INFO:plot_model(fold=StratifiedKFold(n_splits=10, random_state=None, shuffle=False), use_train_data=False, verbose=True, is_in_evaluate=True, display=None, display_format=None, estimator=GradientBoostingClassifier(ccp_alpha=0.0, criterion='friedman_mse', init=None,
+                           learning_rate=0.1, loss='deviance', max_depth=3,
+                           max_features=None, max_leaf_nodes=None,
+                           min_impurity_decrease=0.0, min_impurity_split=None,
+                           min_samples_leaf=1, min_samples_split=2,
+                           min_weight_fraction_leaf=0.0, n_estimators=100,
+                           n_iter_no_change=None, presort='deprecated',
+                           random_state=5946, subsample=1.0, tol=0.0001,
+                           validation_fraction=0.1, verbose=0,
+                           warm_start=False), feature_name=None, fit_kwargs={}, groups=None, label=False, plot=feature, plot_kwargs={}, save=False, scale=1, system=True)
+2023-03-08 23:55:04,416:INFO:Checking exceptions
+2023-03-08 23:55:04,424:INFO:Preparing display monitor
+2023-03-08 23:55:04,446:INFO:Preloading libraries
+2023-03-08 23:55:04,486:INFO:Copying training dataset
+2023-03-08 23:55:04,488:INFO:Copying test dataset
+2023-03-08 23:55:04,489:INFO:Plot type: feature
+2023-03-08 23:55:04,495:WARNING:No coef_ found. Trying feature_importances_
+2023-03-08 23:55:04,794:INFO:Visual Rendered Successfully
+2023-03-08 23:55:04,919:INFO:plot_model() succesfully completed......................................
