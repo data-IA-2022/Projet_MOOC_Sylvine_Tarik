@@ -6,6 +6,8 @@ import plotly.express as px
 from plotly.io import to_json
 from flask_bootstrap import Bootstrap
 import pandas as pd
+import numpy as np
+import pickle
 
 
 import numpy as np
@@ -26,14 +28,38 @@ def analyse():
     # Generate HTML code for Plotly px figure
     plot_html = mooc_populaires_bar_plot.to_html(full_html=False)
     return render_template('analyse.html', plot=plot_html)
-    
+
+ 
+   
 
 @app.route('/model', methods=['GET', 'POST'])
 def model():
     df=pd.read_csv(dataset)
-    cours = df['course_id'].unique()
-    pays = df['country'].unique()
-    level_educ = df['level_of_education'].unique()
+    pays_dict = {'--': np.nan, 'République française': 'FR', 'Mauritanie': 'MR',
+                 'Maroc': 'MA', 'Togo': 'TG', 'Cameroun': 'CM', 'Algérie': 'DZ',
+                  'Côte d\'Ivoire': 'CI', 'Belgique': 'BE', 'Tunisie': 'TN',
+                   'Madagascar': 'MG', 'Indonésie': 'ID', 'Russie': 'RU',
+                    'République démocratique du Congo': 'CD', 'Suisse': 'CH',
+                    'Canada': 'CA', 'Chine continentale': 'CN', 'Bénin': 'BJ',
+                    'Colombie': 'CO', 'Comores': 'KM', 'Polynésie française': 'PF',
+                    'Réunion': 'RE', 'Singapour': 'SG', 'Guadeloupe': 'GP', 'Thaïlande': 'TH',
+                    'Sénégal': 'SN', 'Martinique': 'MQ', 'Gabon': 'GA', 'Guyane française': 'GF',
+                    'Mali': 'ML', 'Andorre': 'AD', 'Costa Rica': 'CR', 'Irlande': 'IE',
+                    'Luxembourg': 'LU', 'Émirats arabes unis': 'AE', 'Australie': 'AU',
+                    'République centrafricaine': 'CF', 'Royaume-Uni': 'GB'}
+    pays = pays_dict.keys()
+    level_educ_dict= {'--': np.nan,
+    "Doctorat" : "p",
+    "Master ou diplôme professionnel" : "m", 
+    "Diplôme de premier cycle supérieur" : "b", 
+    "Niveau associé": "a", 
+    "Lycéé / enseignement secondaire" : "hs", 
+    "Collège / enseignement secondaire inférieur" : "jhs", 
+    "Enseignement primaire" : "el", 
+    "Pas de Formation Scolaire" : "none", 
+    "Autres Etudes" : "other"}
+    level_educ = level_educ_dict.keys()
+
     if request.method == 'POST':
         user = request.form['user']
         gender = request.form['gender']
@@ -48,9 +74,9 @@ def model():
         certificate_eligible = request.form['certificate_eligible']
         # Use values to run prediction model and get results
         # ...
-        return render_template('model.html', prediction=result, cours=cours, pays=pays, level_educ=level_educ)
+        return render_template('model.html', prediction=result, pays=pays, level_educ=level_educ)
     else:
-        return render_template('model.html', cours=cours, pays=pays, level_educ=level_educ)
+        return render_template('model.html', pays=pays, level_educ=level_educ)
 
 if __name__ == '__main__':
     app.run(debug=True)

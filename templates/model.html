@@ -36,7 +36,7 @@
           </select>
         </div>
         <div class="mb-3">
-          <label for="level_of_education" class="form-label">Level of Education:</label>
+          <label for="level_of_education" class="form-label">Niveau d'education:</label>
           <select id="level_of_education" name="level_of_education" class="form-control">
             {% for l in level_educ %}
             <option value="{{ l }}">{{ l }}</option>
@@ -44,23 +44,19 @@
           </select>
         </div>
         <div class="mb-3">
-          <label for="course_id" class="form-label">Course ID:</label>
-          <select id="course_id" name="course_id" class="form-control">
-            {% for c in cours %}
-            <option value="{{ c }}">{{ c }}</option>
-            {% endfor %}
-          </select>
+          <label for="delai_1er_post " class="form-label">Delai par rapport au 1er post : (en nombre de jours)</label>
+          <input type="number" id="delai_1er_post " name="delai_1er_post " class="form-control">
         </div>
         <div class="mb-3">
-          <label for="nb_threads" class="form-label">Number of Threads:</label>
+          <label for="nb_threads" class="form-label">Nombres de messages Threads:</label>
           <input type="number" id="nb_threads" name="nb_threads" class="form-control">
         </div>
         <div class="mb-3">
-          <label for="nb_comments" class="form-label">Number of Comments:</label>
+          <label for="nb_comments" class="form-label">Number de messages Comments:</label>
           <input type="number" id="nb_comments" name="nb_comments" class="form-control">
         </div>
         <div class="mb-3">
-          <label for="concat_bodys" class="form-label">Concatenated Bodies:</label>
+          <label for="concat_bodys" class="form-label">Corpus: (Veuillez afficher une concaténation de tous les messages)</label>
           <textarea id="concat_bodys" name="concat_bodys" class="form-control"></textarea>
         </div>
         <div class="mb-3">
