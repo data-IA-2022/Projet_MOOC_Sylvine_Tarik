@@ -16,6 +16,7 @@ from textblob_fr import PatternTagger, PatternAnalyzer
 
 
 
+
 import os.path
 
 model = os.path.join("data", "my_best_pipeline.pkl")
@@ -105,15 +106,15 @@ def model():
         # import model avec pycaret
         loaded_model = pickle.load(open(filename, 'rb'))
         # prediction avec le modele
-        y_pred = loaded_model.predict(df_input)
+        # y_pred = loaded_model.predict(df_input)
 
         # print(f"y pred = {y_pred}")
-
+        y_pred = 1   
         if y_pred == [1]:
             result = f"L'utilisateur {user} devrait valider le diplome"
         else: 
             result = f"L'utilisateur {user} ne devrait pas valider le diplome"
-        return render_template('model.html', prediction=result, pays=pays, level_educ=level_educ)
+        return render_template('model.html', prediction=result, pays=pays, level_educ=level_educ,a=df_input)
     else:
         return render_template('model.html', pays=pays, level_educ=level_educ)
 
