@@ -3,3 +3,5 @@ venv_mooc/
 
 # config file
 config.yaml
+
+node_modules

@@ -9,7 +9,7 @@ import time
 # Connexion à mongodb
 conn = db_con.connect_to_db(config_file='config.yaml', section='mongo_local', ssh=False, local_port=None, ssh_section= 'ssh_tunnel-azure')
 # Connexion à mysql
-conn_mysql_datalab = db_con.connect_to_db(config_file='config.yaml', section='mysql_azure_mooc', ssh=True, local_port=None, ssh_section= 'ssh_tunnel-azure')
+conn_mysql_datalab = db_con.connect_to_db(config_file='config.yaml', section='mysql_datalab', ssh=True, local_port=None, ssh_section= 'ssh_tunnel_datalab_mame')
 
 
 

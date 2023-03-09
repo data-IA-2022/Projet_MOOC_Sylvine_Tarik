@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}Analyse{% endblock %}
+
+{% block content %}
+
+<h1 class="text-4xl font-bold">Analyse</h1>
+<div class="plot_user_per_mooc">
+    {{ plot | safe }}
+</div>
+{% endblock %}
