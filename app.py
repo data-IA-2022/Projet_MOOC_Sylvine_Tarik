@@ -8,10 +8,18 @@ from flask_bootstrap import Bootstrap
 import pandas as pd
 import numpy as np
 import pickle
-
-
+from unidecode import unidecode
+from markupsafe import escape
 import numpy as np
+from textblob import TextBlob, Blobber
+from textblob_fr import PatternTagger, PatternAnalyzer
 
+
+
+import os.path
+
+model = os.path.join("data", "my_best_pipeline.pkl")
+filename = os.path.join("data",'modele_redump.sav')
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
 @app.route('/')
@@ -35,7 +43,8 @@ def analyse():
 @app.route('/model', methods=['GET', 'POST'])
 def model():
     df=pd.read_csv(dataset)
-    pays_dict = {'--': np.nan, 'République française': 'FR', 'Mauritanie': 'MR',
+    print(request.method)
+    pays_dict = {'--': np.nan, 'France': 'FR', 'Mauritanie': 'MR',
                  'Maroc': 'MA', 'Togo': 'TG', 'Cameroun': 'CM', 'Algérie': 'DZ',
                   'Côte d\'Ivoire': 'CI', 'Belgique': 'BE', 'Tunisie': 'TN',
                    'Madagascar': 'MG', 'Indonésie': 'ID', 'Russie': 'RU',
@@ -61,19 +70,49 @@ def model():
     level_educ = level_educ_dict.keys()
 
     if request.method == 'POST':
-        user = request.form['user']
-        gender = request.form['gender']
-        country = request.form['country']
-        level_of_education = request.form['level_of_education']
-        course_id = request.form['course_id']
-        nb_threads = request.form['nb_threads']
-        nb_comments = request.form['nb_comments']
-        concat_bodys = request.form['concat_bodys']
-        delai_1er_post = request.form['delai_1er_post']
-        grade = request.form['grade']
-        certificate_eligible = request.form['certificate_eligible']
+        print(request.form)
+        user = request.form.get('user', np.nan)
+        gender = request.form.get('gender', np.nan)
+        country = request.form.get('country', np.nan)
+        level_of_education = request.form.get('level_of_education', np.nan)
+        nb_threads = request.form.get('nb_threads', np.nan)
+        nb_comments = request.form.get('nb_comments', np.nan)
+        corpus = request.form.get('concat_bodys', '')
+        delai_1er_post = request.form.get('delai_1er_post', np.nan)
         # Use values to run prediction model and get results
-        # ...
+        # prétraitement du corpus
+        #lower case
+        corpus = corpus.lower()
+        # envlever les accents
+        corpus= unidecode(corpus)
+        # analyse de sentiments
+        tb = Blobber(pos_tagger=PatternTagger(), analyzer=PatternAnalyzer())
+        blob = tb(corpus)
+
+        polarity = (blob.sentiment[0])
+        subjectivity = (blob.sentiment[1])
+        # définition du df pour la prédiction
+        input = [gender, country, level_of_education, nb_threads, nb_comments, corpus, delai_1er_post, polarity, subjectivity]
+        for i in range(len(input)):
+            if input[i] == 'nan':
+                input[i] = np.NaN
+
+        df_input = pd.DataFrame(np.array([input]),
+                            columns=["gender", "country", "level_of_education", "nb_threads", "nb_comments", "corpus", "delai_1er_post", "polarity", "subjectivity"])
+        print(df_input)
+        # import model avec pycaret
+        # loaded_model = model
+        # import model avec pycaret
+        loaded_model = pickle.load(open(filename, 'rb'))
+        # prediction avec le modele
+        y_pred = loaded_model.predict(df_input)
+
+        # print(f"y pred = {y_pred}")
+
+        if y_pred == [1]:
+            result = f"L'utilisateur {user} devrait valider le diplome"
+        else: 
+            result = f"L'utilisateur {user} ne devrait pas valider le diplome"
         return render_template('model.html', prediction=result, pays=pays, level_educ=level_educ)
     else:
         return render_template('model.html', pays=pays, level_educ=level_educ)
