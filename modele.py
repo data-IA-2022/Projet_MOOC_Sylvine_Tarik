@@ -109,6 +109,7 @@ best = compare_models()
 evaluate_model(best)
 
 print(best)
+# on switche sur un notebook car permet d'afficher les sorties plus facilement
 
 quit()
 

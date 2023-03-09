@@ -36,3 +36,6 @@ textblob==0.17.1
 textblob-fr==0.2.0
 plotly
 sklearn
+unidecode
+
+
