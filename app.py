@@ -14,10 +14,13 @@ import numpy as np
 from textblob import TextBlob, Blobber
 from textblob_fr import PatternTagger, PatternAnalyzer
 import db_connection as db_con
+from pycaret.classification import load_model, predict_model
+from EDA_notebook import fig_gender, fig_users_genre, fig_user_pays,fig_user_level, fig_user_mooc_success, fig_user_message, fig_success_nb_messages
 
 import os.path
+classification_model = os.path.join("data", "my_best_pipeline")
+model = load_model(classification_model)
 
-model = os.path.join("data", "my_best_pipeline.pkl")
 filename = os.path.join("data",'modele_redump.sav')
 
 # # Connexion à mysql
@@ -48,7 +51,35 @@ def analyse():
     mooc_populaires_bar_plot
     # Generate HTML code for Plotly px figure
     plot_html = mooc_populaires_bar_plot.to_html(full_html=False)
-    return render_template('analyse.html', plot=plot_html)
+
+    #subplot gender
+    fig_gender
+    subplot_gender_html = fig_gender.to_html(full_html=False)
+    #user genre
+    fig_users_genre
+    plot_user_gender = fig_users_genre.to_html(full_html=False)
+    #user per country
+    fig_user_pays
+    plot_user_pays = fig_user_pays.to_html(full_html=False)
+    #plot users level of educ
+    fig_user_level
+    plot_user_level = fig_user_level.to_html(full_html=False)
+    # bar plot user par ooc avec taux de réussite
+    fig_user_mooc_success
+    barplot_user_mooc_success = fig_user_mooc_success.to_html(full_html=False)
+    # bar chart nb message par user
+    fig_user_message
+    barplot_message_user = fig_user_message.to_html(full_html=False)
+    # scatter plot success nb message
+    fig_success_nb_messages
+    scatter_messages_success = fig_success_nb_messages.to_html(full_html=False)
+
+
+
+
+
+    return render_template('analyse.html', plot=plot_html, subplot=subplot_gender_html,piechart_user_gender=plot_user_gender,piechart_user_pays = plot_user_pays, piechart_user_lvl = plot_user_level,
+                            barchart_user_mooc_success = barplot_user_mooc_success,barchart_user_message = barplot_message_user, scatter_mess_success = scatter_messages_success)
 
  
    
@@ -117,23 +148,16 @@ def model():
         polarity = (blob.sentiment[0])
         subjectivity = (blob.sentiment[1])
         # définition du df pour la prédiction
-        input = [gender, country, level_of_education, nb_threads, nb_comments, corpus, delai_1er_post, polarity, subjectivity]
-        for i in range(len(input)):
-            if input[i] == '':
-                input[i] = np.NaN
-
-        df_input = pd.DataFrame(np.array([input]),
-                            columns=["gender", "country", "level_of_education", "nb_threads", "nb_comments", "corpus", "delai_1er_post", "polarity", "subjectivity"])
-        print(df_input)
+        df_input = pd.DataFrame(columns=["gender", "country", "level_of_education", "nb_threads", "nb_comments", "delai_1er_post", "polarity", "subjectivity"])
+        df_input.loc[0] = [gender, country, level_of_education, nb_threads, nb_comments, delai_1er_post, polarity, subjectivity ]
         # import model avec pycaret
         # loaded_model = model
         # import model avec pycaret
         loaded_model = pickle.load(open(filename, 'rb'))
         # prediction avec le modele
-        # y_pred = loaded_model.predict(df_input)
-
-        # print(f"y pred = {y_pred}")
-        y_pred = 1   
+        y_pred = loaded_model.predict(df_input)
+        # y_pred = predict_model(model, data=df_input)
+        # print(f"y pred = {y_pred}") 
         if y_pred == [1]:
             result = f"L'utilisateur {user} devrait valider le diplome"
         else: 
