@@ -44,16 +44,16 @@
           </select>
         </div>
         <div class="mb-3">
-          <label for="delai_1er_post " class="form-label">Delai par rapport au 1er post : (en nombre de jours)</label>
-          <input type="number" id="delai_1er_post " name="delai_1er_post " class="form-control">
+          <label for="delai_1er_post" class="form-label">Delai par rapport au 1er post : (en nombre de jours)</label>
+          <input type="number" id="delai_1er_post" min=0 name="delai_1er_post" class="form-control">
         </div>
         <div class="mb-3">
           <label for="nb_threads" class="form-label">Nombres de messages Threads:</label>
-          <input type="number" id="nb_threads" name="nb_threads" class="form-control">
+          <input type="number" id="nb_threads" min=0 name="nb_threads" class="form-control">
         </div>
         <div class="mb-3">
-          <label for="nb_comments" class="form-label">Number de messages Comments:</label>
-          <input type="number" id="nb_comments" name="nb_comments" class="form-control">
+          <label for="nb_comments" class="form-label">Nombres de messages Comments:</label>
+          <input type="number" id="nb_comments" min=0 name="nb_comments" class="form-control">
         </div>
         <div class="mb-3">
           <label for="concat_bodys" class="form-label">Corpus: (Veuillez afficher une concaténation de tous les messages)</label>
@@ -66,12 +66,12 @@
   </div>
 </div>
 {% if prediction %}
-<div class="my-8">
-<h2 class="text-2xl font-bold mb-4">Prediction Result</h2>
+<div class="my-8 justify-content-center">
+<h2 class="text-2xl font-bold mb-4 text-center">Prediction Result</h2>
 <div class="grid grid-cols-2 gap-4">
 <div>
-<p class="text-lg"><strong>Votre résultat:</strong> {{ prediction }}</p>
-<p class="text-lg"><strong>Votre résultat:</strong> {{ a }}</p>
+<h2 class="font-weight-normal text-center"><strong>Votre résultat:</strong> {{ prediction }} pour la sélection suivante:</h2>
+<div class="table row justify-content-center">{{ table|safe }}</div>
 </div>
 </div>
 </div>

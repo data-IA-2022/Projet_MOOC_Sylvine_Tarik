@@ -13,14 +13,26 @@ from markupsafe import escape
 import numpy as np
 from textblob import TextBlob, Blobber
 from textblob_fr import PatternTagger, PatternAnalyzer
-
-
-
+import db_connection as db_con
 
 import os.path
 
 model = os.path.join("data", "my_best_pipeline.pkl")
 filename = os.path.join("data",'modele_redump.sav')
+
+# # Connexion à mysql
+# conn_mysql_datalab = db_con.connect_to_db(config_file='config.yaml', section='mysql_local_mooc', ssh=False, local_port=None, ssh_section= 'ssh_tunnel_datalab')
+# variable = '21GG21'
+# course_var = 'MinesTelecom/04017S02/session02'
+# query = "SELECT corpus FROM dataset WHERE user = '21GG21' AND course_id = 'MinesTelecom/04017S02/session02'"
+# # encode the query parameters as bytes
+# variable_bytes = variable.encode('utf-8')
+# course_var_bytes = course_var.encode('utf-8')
+# message_query_user = conn_mysql_datalab.execute(query, variable_bytes,course_var_bytes) 
+# results = message_query_user.fetchall()
+# print(results)
+# conn_mysql_datalab.close()
+
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
 @app.route('/')
@@ -74,12 +86,24 @@ def model():
         print(request.form)
         user = request.form.get('user', np.nan)
         gender = request.form.get('gender', np.nan)
-        country = request.form.get('country', np.nan)
-        level_of_education = request.form.get('level_of_education', np.nan)
-        nb_threads = request.form.get('nb_threads', np.nan)
-        nb_comments = request.form.get('nb_comments', np.nan)
+        country = pays_dict.get(request.form.get('country', np.nan))
+        level_of_education = level_educ_dict.get(request.form.get('level_of_education', np.nan))
+        nb_threads_str = request.form.get('nb_threads', np.nan)
+        if nb_threads_str:
+            nb_threads = int(nb_threads_str)
+        else:
+            nb_threads = np.nan
+        nb_comments_str = request.form.get('nb_comments', np.nan)
+        if nb_comments_str:
+            nb_comments = int(nb_comments_str)
+        else:
+            nb_comments = np.nan
         corpus = request.form.get('concat_bodys', '')
-        delai_1er_post = request.form.get('delai_1er_post', np.nan)
+        delai_1er_post_str = request.form.get('delai_1er_post', np.nan)
+        if delai_1er_post_str:
+            delai_1er_post = int(delai_1er_post_str)
+        else:
+            delai_1er_post = np.nan
         # Use values to run prediction model and get results
         # prétraitement du corpus
         #lower case
@@ -95,7 +119,7 @@ def model():
         # définition du df pour la prédiction
         input = [gender, country, level_of_education, nb_threads, nb_comments, corpus, delai_1er_post, polarity, subjectivity]
         for i in range(len(input)):
-            if input[i] == 'nan':
+            if input[i] == '':
                 input[i] = np.NaN
 
         df_input = pd.DataFrame(np.array([input]),
@@ -114,7 +138,7 @@ def model():
             result = f"L'utilisateur {user} devrait valider le diplome"
         else: 
             result = f"L'utilisateur {user} ne devrait pas valider le diplome"
-        return render_template('model.html', prediction=result, pays=pays, level_educ=level_educ,a=df_input)
+        return render_template('model.html', prediction=result, pays=pays, level_educ=level_educ,table = df_input.to_html())
     else:
         return render_template('model.html', pays=pays, level_educ=level_educ)
 
